@@ -90,6 +90,11 @@ curl -X POST http://localhost:8765/v1/audio/speech \
 4. Stitcher joins with crossfade (no audible seams)
 5. Converts to requested format (mp3, wav, opus, etc.)
 
+## Requirements
+
+- **Docker** (for the containers)
+- **ffmpeg** (included in Docker image, but needed if running server.py directly)
+
 ## MCP Server (Claude Integration)
 
 Use TTS directly from Claude Code or Claude Desktop:
