@@ -48,6 +48,34 @@ class SpeechRequest(BaseModel):
 # CHUNKING - Split long text at natural boundaries
 # =============================================================================
 
+def sanitize_text(text: str) -> str:
+    """Clean text for TTS - normalize unicode, fix punctuation, remove problematic chars."""
+    import unicodedata
+
+    # Normalize unicode (convert fancy quotes, dashes, etc to ASCII equivalents)
+    text = unicodedata.normalize('NFKD', text)
+
+    # Replace smart quotes and dashes
+    replacements = {
+        '"': '"', '"': '"', ''': "'", ''': "'",  # Smart quotes
+        '–': '-', '—': '-',  # Dashes
+        '…': '...',  # Ellipsis
+        '\u200b': '', '\u200c': '', '\u200d': '', '\ufeff': '',  # Zero-width chars
+        '\t': ' ', '\r': ' ',  # Tabs/carriage returns
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    # Collapse multiple spaces/newlines
+    text = re.sub(r'\n+', ' ', text)
+    text = re.sub(r' +', ' ', text)
+
+    # Remove control characters except newline
+    text = ''.join(c for c in text if c == '\n' or (ord(c) >= 32 and ord(c) < 127) or ord(c) > 127)
+
+    return text.strip()
+
+
 def estimate_words(text: str) -> int:
     return len(text.split())
 
@@ -266,16 +294,21 @@ async def create_speech(request: SpeechRequest):
     """Generate unlimited-length speech with automatic chunking."""
     profile = PROFILES.get(BACKEND, PROFILES["kokoro"])
 
+    # Sanitize input text first
+    text = sanitize_text(request.input)
+    if not text:
+        raise HTTPException(400, "Empty text after sanitization")
+
     # Check if chunking needed
     needs_chunk = (
-        estimate_words(request.input) > profile["max_words"] or
-        len(request.input) > profile["max_chars"]
+        estimate_words(text) > profile["max_words"] or
+        len(text) > profile["max_chars"]
     )
 
     try:
         if needs_chunk:
             # Chunk, generate each, stitch
-            chunks = chunk_text(request.input)
+            chunks = chunk_text(text)
             audio_chunks = []
             for i, chunk in enumerate(chunks):
                 logger.info(f"Generating chunk {i+1}/{len(chunks)}")
@@ -285,8 +318,8 @@ async def create_speech(request: SpeechRequest):
             output = convert_format(wav_bytes, request.response_format)
         else:
             # Direct generation
-            logger.info(f"Direct generation: {len(request.input)} chars")
-            wav_bytes = generate_tts(request.input, request.voice)
+            logger.info(f"Direct generation: {len(text)} chars")
+            wav_bytes = generate_tts(text, request.voice)
             output = convert_format(wav_bytes, request.response_format)
 
         media_types = {

@@ -9,10 +9,16 @@
 
 services:
   kokoro:
-    image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
-    # For GPU: ghcr.io/remsky/kokoro-fastapi-gpu:latest
+    image: ghcr.io/remsky/kokoro-fastapi-gpu:latest
     ports:
       - "8880:8880"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
       interval: 10s
