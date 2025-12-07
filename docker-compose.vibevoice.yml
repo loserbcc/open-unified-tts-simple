@@ -1,0 +1,40 @@
+# Open Unified TTS Simple - VibeVoice Backend
+# Preset character voices (emma, carter, etc.)
+#
+# Usage:
+#   docker compose -f docker-compose.vibevoice.yml up -d
+#   curl -X POST http://localhost:8765/v1/audio/speech \
+#     -H "Content-Type: application/json" \
+#     -d '{"input":"Hello world","voice":"emma"}' -o test.mp3
+
+services:
+  vibevoice:
+    image: ghcr.io/loserbcc/vibevoice:latest
+    ports:
+      - "8086:8086"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  unified-tts:
+    build: .
+    ports:
+      - "8765:8765"
+    environment:
+      - TTS_BACKEND=vibevoice
+      - BACKEND_URL=http://vibevoice:8086
+    depends_on:
+      vibevoice:
+        condition: service_healthy
+
+# Available VibeVoice presets:
+# emma, carter, lily, nova, aria, sarah

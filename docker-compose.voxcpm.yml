@@ -1,0 +1,48 @@
+# Open Unified TTS Simple - VoxCPM 1.5 Backend
+# High-quality voice cloning, requires GPU (~8GB VRAM)
+#
+# Note: You need voice reference files in ./voices/ directory
+# Format: ./voices/morgan/reference.wav + transcript.txt
+#
+# Usage:
+#   docker compose -f docker-compose.voxcpm.yml up -d
+#   curl -X POST http://localhost:8765/v1/audio/speech \
+#     -H "Content-Type: application/json" \
+#     -d '{"input":"Hello world","voice":"morgan"}' -o test.mp3
+
+services:
+  voxcpm:
+    image: ghcr.io/loserbcc/voxcpm15:latest
+    ports:
+      - "7870:7870"
+    volumes:
+      - ./voices:/app/voices:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7870/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  unified-tts:
+    build: .
+    ports:
+      - "8765:8765"
+    environment:
+      - TTS_BACKEND=voxcpm
+      - BACKEND_URL=http://voxcpm:7870
+    depends_on:
+      voxcpm:
+        condition: service_healthy
+
+# Voice cloning setup:
+# 1. Create ./voices/yourvoice/ directory
+# 2. Add reference.wav (10-30 seconds of clean speech)
+# 3. Add transcript.txt (exact transcription of the audio)
+# 4. Restart containers

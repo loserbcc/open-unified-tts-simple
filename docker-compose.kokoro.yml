@@ -1,0 +1,38 @@
+# Open Unified TTS Simple - Kokoro Backend
+# 50+ built-in voices, runs on CPU or GPU, no voice cloning needed
+#
+# Usage:
+#   docker compose -f docker-compose.kokoro.yml up -d
+#   curl -X POST http://localhost:8765/v1/audio/speech \
+#     -H "Content-Type: application/json" \
+#     -d '{"input":"Hello world","voice":"af_bella"}' -o test.mp3
+
+services:
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
+    # For GPU: ghcr.io/remsky/kokoro-fastapi-gpu:latest
+    ports:
+      - "8880:8880"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  unified-tts:
+    build: .
+    ports:
+      - "${PORT:-8766}:8765"
+    environment:
+      - TTS_BACKEND=kokoro
+      - BACKEND_URL=http://kokoro:8880
+    depends_on:
+      kokoro:
+        condition: service_healthy
+
+# Popular Kokoro voices:
+# American Female: af_bella, af_sarah, af_nova, af_sky, af_jessica
+# American Male: am_adam, am_michael, am_eric
+# British Female: bf_emma, bf_alice, bf_lily
+# British Male: bm_george, bm_daniel, bm_lewis
+# OpenAI-compatible: alloy, echo, fable, onyx, nova, shimmer
