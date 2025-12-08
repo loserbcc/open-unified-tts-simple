@@ -169,15 +169,70 @@ curl -X POST http://localhost:8765/v1/audio/speech \
 - **Docker** (for the containers)
 - **ffmpeg** (included in Docker image, but needed if running server.py directly)
 
-## MCP Server (Claude Integration)
+## 🤖 MCP Server - The AI-Native Interface
 
-Use TTS directly from Claude Code or Claude Desktop:
+**This is the killer feature.** MCP (Model Context Protocol) lets any AI assistant speak using your TTS system. No web UI, no API calls - just natural language.
+
+### What is MCP?
+
+MCP is an open standard (created by Anthropic) that lets AI assistants use tools. Think of it as "plugins for AI" - once you install an MCP server, your AI can use those capabilities directly.
+
+### Why This Matters
+
+| Without MCP | With MCP |
+|-------------|----------|
+| Copy text → Open web UI → Paste → Generate → Download | "Read this article aloud with Emma's voice" |
+| Write curl commands | "Generate an audiobook from chapter3.txt" |
+| Manual workflow | AI handles everything |
+
+**Your AI assistant becomes a voice.**
+
+### Compatible MCP Clients
+
+Works with any MCP-compatible AI tool:
+
+| Client | Type | Notes |
+|--------|------|-------|
+| [Claude Code](https://claude.ai/code) | CLI | Anthropic's official CLI |
+| [Claude Desktop](https://claude.ai/download) | Desktop App | macOS/Windows |
+| [Cline](https://github.com/cline/cline) | VS Code Extension | Open source |
+| [Cursor](https://cursor.sh) | IDE | AI-first code editor |
+| [Windsurf](https://codeium.com/windsurf) | IDE | Codeium's AI IDE |
+| [Continue](https://continue.dev) | VS Code/JetBrains | Open source |
+| Any MCP client | - | Standard protocol |
+
+### Quick Install
 
 ```bash
 cd mcp-server
+
+# Install dependencies
 uv sync
+
+# Add to Claude Code (one command)
 claude mcp add unified-tts-simple uv run python server.py
+
+# Or add to Claude Desktop (~/.claude/claude_desktop_config.json)
 ```
+
+<details>
+<summary>Claude Desktop config example</summary>
+
+```json
+{
+  "mcpServers": {
+    "unified-tts-simple": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-server", "python", "server.py"],
+      "env": {
+        "TTS_API_URL": "http://localhost:8766",
+        "TTS_OUTPUT_DIR": "~/tts-output"
+      }
+    }
+  }
+}
+```
+</details>
 
 ### MCP Tools
 
@@ -187,15 +242,33 @@ claude mcp add unified-tts-simple uv run python server.py
 | `list_voices` | Show all available voices |
 | `tts_status` | Check if TTS service is running |
 
-### Example Usage (in Claude)
+### Natural Language Examples
+
+Just talk to your AI naturally:
 
 ```
 "Say hello world with Emma's voice"
 → speak(text="Hello world", voice="bf_emma", action="play")
 
-"Generate an audiobook intro and save it"
-→ speak(text="Welcome to...", voice="am_adam", action="save", filename="intro")
+"Read this README aloud and save it as intro.mp3"
+→ speak(text="...", voice="af_bella", action="save", filename="intro")
+
+"What voices do you have?"
+→ list_voices()
+
+"Is the TTS server running?"
+→ tts_status()
 ```
+
+### Real-World Use Cases
+
+| Scenario | What You Say |
+|----------|--------------|
+| **Proofreading** | "Read my email draft back to me" |
+| **Accessibility** | "Read this documentation aloud" |
+| **Content creation** | "Generate audio for each section of my blog post" |
+| **Learning** | "Read this French text with the French voice" |
+| **Podcast prep** | "Create audio for my script, Alice uses Emma's voice, Bob uses Adam's" |
 
 ### Environment Variables
 
@@ -203,6 +276,39 @@ claude mcp add unified-tts-simple uv run python server.py
 |----------|---------|-------------|
 | `TTS_API_URL` | `http://localhost:8766` | URL of the TTS API |
 | `TTS_OUTPUT_DIR` | `~/tts-output` | Where to save audio files |
+
+### Zero Setup Option: Use the Hosted SaaS
+
+**Don't want to run your own TTS server?** Point your MCP client at our hosted API:
+
+```json
+{
+  "env": {
+    "TTS_API_URL": "https://lessfortts.loser.com"
+  }
+}
+```
+
+That's it. Install the MCP server, set the URL, and your AI can speak. No Docker, no GPU, no setup.
+
+- **67+ Kokoro voices** included
+- **Character clones** (Morgan Freeman, Rick & Morty, etc.)
+- **Free during alpha** - no credit card required
+
+> **Coming Soon:** API keys and MCP access tokens for [lessfortts.loser.com](https://lessfortts.loser.com). Currently in dev/testing - free access while we build out authentication. Want early access? Email buddy@loser.com.
+
+### Architecture
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   AI Client     │────▶│   MCP Server    │────▶│   TTS API       │
+│ (Claude, Cline) │     │ (this package)  │     │ (server.py)     │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+      speaks              translates              generates
+    naturally            to API calls              audio
+```
+
+The MCP server is a thin bridge - it translates natural AI tool calls into HTTP requests to your TTS API. The API handles chunking, stitching, and format conversion.
 
 ## Documentation
 
