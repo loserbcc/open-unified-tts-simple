@@ -1,0 +1,22 @@
+# Core TTS API dependencies
+fastapi==0.115.0
+uvicorn==0.32.0
+pydantic==2.9.0
+requests>=2.31.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Production Studio dependencies
+gradio>=4.0.0
+pydub>=0.25.1
+
+# Optional - AI Features
+# openai  # For OpenAI-compatible APIs
+# anthropic  # For Claude
+
+# Optional - Import Features
+# PyPDF2  # PDF import
+# pytesseract  # OCR from images
+# Pillow  # Image processing
+# beautifulsoup4  # Web scraping
+# lxml  # HTML parsing

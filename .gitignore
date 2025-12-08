@@ -1,9 +1,53 @@
+# Python
 __pycache__/
 *.py[cod]
-.venv/
+*.so
+*.egg
 *.egg-info/
 dist/
 build/
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment files
 .env
+.env.local
+config.json
+
+# Audio files (generated outputs)
 *.mp3
 *.wav
+*.ogg
+*.flac
+output/
+outputs/
+audio_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test files
+test_output/
+*.test.mp3
+*.test.wav
+
+# Gradio cache
+gradio_cached_examples/
+flagged/

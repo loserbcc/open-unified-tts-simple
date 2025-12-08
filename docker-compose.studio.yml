@@ -1,0 +1,57 @@
+# Open Unified TTS Studio - Full production environment
+# Includes Kokoro backend + TTS API + Production Studio web interface
+#
+# Usage:
+#   docker compose -f docker-compose.studio.yml up -d
+#
+# Access:
+#   Studio UI: http://localhost:7860
+#   TTS API: http://localhost:8766
+#   Backend: http://localhost:8880
+
+services:
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi:latest  # CPU version
+    ports:
+      - "8880:8880"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  unified-tts:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8766:8765"
+    environment:
+      - TTS_BACKEND=kokoro
+      - BACKEND_URL=http://kokoro:8880
+    depends_on:
+      kokoro:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.studio
+    ports:
+      - "7860:7860"
+    environment:
+      - TTS_API_URL=http://unified-tts:8765
+      - TTS_OUTPUT_DIR=/output
+    volumes:
+      - ./studio-output:/output
+    depends_on:
+      unified-tts:
+        condition: service_healthy
+
+volumes:
+  studio-output:

@@ -1,0 +1,39 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies for audio processing and OCR
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    tesseract-ocr \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements-studio.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements-studio.txt && \
+    pip install --no-cache-dir \
+    fastapi \
+    uvicorn \
+    pydantic \
+    requests \
+    numpy \
+    scipy \
+    gradio \
+    pydub \
+    PyPDF2 \
+    pytesseract \
+    Pillow \
+    beautifulsoup4 \
+    lxml
+
+# Copy studio application
+COPY studio.py .
+
+# Expose Gradio default port
+EXPOSE 7860
+
+# Run studio
+CMD ["python", "studio.py"]

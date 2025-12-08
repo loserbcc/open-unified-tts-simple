@@ -1,0 +1,91 @@
+# Production Deployment - Open TTS Studio Demo
+#
+# This setup is designed for PUBLIC DEMO hosting with security:
+# - Frontend: Gradio Studio UI (public-facing)
+# - Backend: Points to TTS API via Tailscale (secured)
+# - nginx: Rate limiting, SSL, security headers
+#
+# Deploy this on a cheap VPS ($5/mo DigitalOcean/Linode)
+# Backend stays safe on your Moya server via Tailscale
+#
+# Usage:
+#   1. Set environment variables in .env
+#   2. docker compose -f docker-compose.production.yml up -d
+#   3. Setup SSL: certbot --nginx -d demo.yourdomain.com
+
+version: '3.8'
+
+services:
+  # nginx reverse proxy with rate limiting and SSL
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-production.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # SSL certificates
+      - nginx-cache:/var/cache/nginx
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - studio
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Studio frontend (public-facing)
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.studio
+    expose:
+      - "7860"  # Only exposed to nginx, not publicly
+    environment:
+      # Backend TTS API via Tailscale (secure)
+      - TTS_API_URL=${TTS_API_URL}  # e.g., http://100.x.x.x:8765
+      - TTS_OUTPUT_DIR=/output
+      # Rate limiting hints for Gradio
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=7860
+    volumes:
+      - studio-output:/output:rw
+      - ./config.json:/app/config.json:rw  # Persistent config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # Resource limits (prevent abuse)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Fail2ban for brute force protection (optional but recommended)
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./fail2ban:/data
+      - nginx-logs:/var/log/nginx:ro
+    restart: unless-stopped
+
+volumes:
+  studio-output:
+  nginx-cache:
+  nginx-logs:
+
+networks:
+  default:
+    driver: bridge

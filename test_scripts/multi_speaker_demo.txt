@@ -1,0 +1,10 @@
+Rick: Morty, we gotta test this TTS system. It's crucial for interdimensional broadcasting.
+Morty: Oh geez Rick, I don't know about this. What if something goes wrong?
+Rick: Nothing's gonna go wrong, Morty! This is cutting-edge voice synthesis technology.
+Narrator: Meanwhile, in a parallel universe, the experiment was about to begin.
+Morty: Wait, who's that narrator guy? Where did he come from?
+Rick: Don't worry about it, Morty. Just read your lines and sound natural.
+Narrator: The scientist adjusted his equipment with practiced precision.
+Morty: This is getting really weird, Rick. I'm not comfortable with mysterious narrators.
+Rick: That's the beauty of multi-speaker TTS, Morty! We can have as many voices as we want!
+Narrator: And thus, the test concluded successfully, proving the system's capability.
