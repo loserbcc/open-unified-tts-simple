@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Deployment:** Docker Compose (backends) + uv/pip (Studio)
 
 ### Testing
-- ✅ Tested on: Linux (Arch), macOS (Tayln)
+- ✅ Tested on: Linux (Arch), macOS
 - ⚠️ Windows testing pending
 - ✅ Kokoro backend working (67 voices)
 - ✅ VoxCPM backend working (7 custom voice clones)

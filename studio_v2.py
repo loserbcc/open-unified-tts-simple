@@ -99,7 +99,7 @@ else:
 
         # AI Backend Selection
         "ai_backend": "disabled",
-        "lmstudio_endpoint": "http://192.168.4.117:1234/v1",
+        "lmstudio_endpoint": "http://localhost:1234/v1",
         "lmstudio_model": "openai/gpt-oss-20b",
         "ollama_endpoint": "http://localhost:11434",
         "ollama_model": "llama3.2",
@@ -426,9 +426,6 @@ def auto_detect_tts_backends() -> Tuple[Dict[str, dict], str]:
         ("localhost", 8880, "Kokoro"),
         ("localhost", 5002, "Coqui TTS"),
         ("localhost", 8080, "OpenAudio"),
-        ("192.168.4.117", 8765, "Tayln - Unified TTS"),
-        ("192.168.4.117", 8766, "Tayln - Unified TTS (alt)"),
-        ("192.168.4.117", 8880, "Tayln - Kokoro"),
     ]
 
     discovered = {}
@@ -850,7 +847,7 @@ def build_interface():
                     backend_url = gr.Textbox(
                         label="TTS API URL",
                         value=TTS_API_URL,
-                        placeholder="http://192.168.4.72:7870"
+                        placeholder="http://localhost:8765"
                     )
 
                     gr.Markdown("### Model Profile (Chunking)")
@@ -887,7 +884,7 @@ def build_interface():
                 with gr.Accordion("LM Studio", open=False) as lmstudio_acc:
                     lmstudio_endpoint = gr.Textbox(
                         label="Endpoint",
-                        value=CONFIG.get("lmstudio_endpoint", "http://192.168.4.117:1234/v1")
+                        value=CONFIG.get("lmstudio_endpoint", "http://localhost:1234/v1")
                     )
                     lmstudio_model = gr.Textbox(
                         label="Model",

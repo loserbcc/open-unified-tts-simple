@@ -13,6 +13,29 @@ Create professional audiobooks, podcasts, and multi-speaker audio in minutes - n
 > **New to TTS?** Start here! This is the user-friendly front-end.
 > **Need the powerful API?** See [open-unified-tts](https://github.com/loserbcc/open-unified-tts) for backend routing and production features.
 
+---
+
+## 🚀 Try It Now - Free Alpha Demo
+
+**Don't want to install anything?** Try the full-featured hosted version free while we're in alpha:
+
+### **[lessfortts.loser.com](https://lessfortts.loser.com)**
+
+| Feature | What You Get |
+|---------|--------------|
+| **67 Kokoro voices** | American, British, male, female |
+| **10 Vietnamese voices** | Northern & Southern accents |
+| **14 character clones** | Morgan Freeman, Rick & Morty, Yoda, GLaDOS, Batman, and more |
+| **8 emotion voices** | Happy, sad, calm, excited |
+
+Free signup (no credit card). Just paste text and generate.
+
+> **Alpha notice:** No data retention guaranteed. Download your audio - we're not saving it for you (yet).
+
+> **Note:** The hosted demo runs on the more advanced [open-unified-tts](https://github.com/loserbcc/open-unified-tts) multi-backend architecture. This repo (Open TTS Studio) is a simplified version designed for easy local deployment.
+
+---
+
 ## What is Open TTS Studio?
 
 **Two tools in one:**

@@ -63,7 +63,7 @@ scan_targets = [
     "http://localhost:8766",   # Alternative port
     "http://localhost:5002",   # Coqui TTS default
     "http://localhost:8080",   # OpenAudio
-    "http://192.168.4.0/24:*", # Network scan
+    # Add your own network endpoints here
 ]
 
 for target in scan_targets:
@@ -90,7 +90,7 @@ Users can drop in config files or paste URLs:
 # tts-backend.yaml
 backends:
   - name: "My Kokoro Server"
-    url: "http://192.168.4.117:8766"
+    url: "http://your-server:8766"
     type: "openai-compatible"
 
   - name: "ElevenLabs"
@@ -104,7 +104,7 @@ backends:
 ```
 
 Or simply paste a URL and Studio probes it:
-- User pastes: `http://192.168.4.117:8766`
+- User pastes: `http://your-server:8766`
 - Studio fetches `/v1/voices`
 - Auto-detects backend type
 - Saves configuration
@@ -203,12 +203,12 @@ Studio auto-detects which adapter to use based on API responses.
 
 2. **Auto-Detect:**
    - Scans network
-   - Shows found backends: "✅ Kokoro (67 voices) at http://192.168.4.117:8766"
+   - Shows found backends: "✅ Kokoro (67 voices) at http://your-server:8766"
    - User clicks "Use This"
    - ✅ Configured!
 
 3. **Manual Add:**
-   - User pastes URL: `http://192.168.4.117:8766`
+   - User pastes URL: `http://your-server:8766`
    - Studio tests endpoint
    - Shows: "✅ Found 67 voices, Backend: Kokoro"
    - User clicks "Save"
@@ -222,7 +222,7 @@ Users can configure multiple backends and choose per-project:
 Available Backends:
   ✅ Kokoro Local (67 voices) - http://localhost:8766
   ✅ ElevenLabs Cloud (120+ voices) - api.elevenlabs.io
-  ✅ Coqui Custom (15 voices) - http://192.168.4.50:5002
+  ✅ Coqui Custom (15 voices) - http://your-coqui-server:5002
 
 For this script, use: [Dropdown: Kokoro Local ▼]
 ```

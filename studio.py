@@ -102,7 +102,7 @@ else:
         "ai_backend": "disabled",  # disabled, lmstudio, ollama, openai, anthropic, openrouter
 
         # LM Studio (local, OpenAI-compatible)
-        "lmstudio_endpoint": "http://192.168.4.117:1234/v1",
+        "lmstudio_endpoint": "http://localhost:1234/v1",
         "lmstudio_model": "openai/gpt-oss-20b",  # Model loaded in LM Studio
 
         # Ollama (local, no API key)
@@ -509,9 +509,6 @@ def auto_detect_tts_backends() -> Tuple[Dict[str, dict], str]:
         ("localhost", 8880, "Kokoro"),
         ("localhost", 5002, "Coqui TTS"),
         ("localhost", 8080, "OpenAudio"),
-        ("192.168.4.117", 8765, "Tayln - Unified TTS"),
-        ("192.168.4.117", 8766, "Tayln - Unified TTS (alt)"),
-        ("192.168.4.117", 8880, "Tayln - Kokoro"),
     ]
 
     discovered = {}
@@ -918,8 +915,8 @@ Setup: Download LM Studio → Load a model → Start server (default port 1234)
                     """)
                     lmstudio_endpoint = gr.Textbox(
                         label="Endpoint (must include /v1)",
-                        value=CONFIG.get("lmstudio_endpoint", "http://192.168.4.117:1234/v1"),
-                        placeholder="http://192.168.4.117:1234/v1",
+                        value=CONFIG.get("lmstudio_endpoint", "http://localhost:1234/v1"),
+                        placeholder="http://localhost:1234/v1",
                         info="Must end with /v1 for OpenAI compatibility"
                     )
                     lmstudio_model = gr.Textbox(
