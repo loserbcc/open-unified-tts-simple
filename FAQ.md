@@ -425,7 +425,7 @@ See README.md for full API docs.
 
 ### Where do I report bugs?
 
-**GitHub Issues:** [github.com/loserbcc/open-unified-tts-simple/issues](https://github.com/loserbcc/open-unified-tts-simple/issues)
+**GitHub Issues:** [github.com/loserbcc/open-tts-studio/issues](https://github.com/loserbcc/open-tts-studio/issues)
 
 Include:
 - What you expected

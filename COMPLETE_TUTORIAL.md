@@ -19,8 +19,8 @@ By the end of this tutorial, you'll have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/loserbcc/open-unified-tts-simple.git
-cd open-unified-tts-simple
+git clone https://github.com/loserbcc/open-tts-studio.git
+cd open-tts-studio
 ```
 
 ### Step 2: Start Kokoro with Docker

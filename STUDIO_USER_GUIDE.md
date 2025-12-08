@@ -9,7 +9,7 @@ The **TTS Production Studio** is a web-based interface for creating professional
 ### 1. Start the Studio
 
 ```bash
-cd /path/to/open-unified-tts-simple
+cd /path/to/open-tts-studio
 uv run python studio_v2.py
 ```
 

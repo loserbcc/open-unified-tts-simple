@@ -15,8 +15,8 @@
 # Scene: Clean terminal, show commands
 # Narration: "Let's start from zero. First, clone the repository."
 
-git clone https://github.com/loserbcc/open-unified-tts-simple.git
-cd open-unified-tts-simple
+git clone https://github.com/loserbcc/open-tts-studio.git
+cd open-tts-studio
 
 # Narration: "Start Kokoro TTS with a single command."
 docker compose -f docker-compose.kokoro.yml up -d
@@ -140,7 +140,7 @@ uv run python studio_v2.py
   - ✅ Docker one-command install
 
 - End card:
-  - GitHub: github.com/loserbcc/open-unified-tts-simple
+  - GitHub: github.com/loserbcc/open-tts-studio
   - "Star ⭐ | Fork 🔱 | Contribute 🚀"
   - "Join us in making TTS accessible to everyone"
 

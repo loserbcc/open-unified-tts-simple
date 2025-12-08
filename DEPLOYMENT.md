@@ -47,7 +47,7 @@ This guide shows how to deploy a **secure public demo** of Open TTS Studio.
 ssh moya
 
 # Start Kokoro backend
-cd /home/brian/projects/open-unified-tts-simple
+cd /home/brian/projects/open-tts-studio
 docker compose -f docker-compose.kokoro.yml up -d
 
 # Start unified TTS API server
